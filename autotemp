@@ -1,4 +1,4 @@
-#!/bin/env python
+#!/home/wyb/.miniconda3/envs/worldscanner/bin/python
 import cv2
 import numpy as np
 from numpy.linalg import norm
@@ -13,7 +13,9 @@ def brightness(img):
         # Grayscale
         return np.average(img)
 
+os.system("v4l2-ctl -c white_balance_automatic=0")
 cam = cv2.VideoCapture(0)
+os.system("v4l2-ctl -c white_balance_automatic=1")
 ret, frame = cam.read()
 if not ret:
     exit()
@@ -28,6 +30,7 @@ after = brightness(frame)
 
 ratio = after / before
 temp = int(4000 + (ratio - 0.7) / 0.3 * 6000)
+print(before, after, after/before)
 
 cmd = f"gsettings set org.gnome.settings-daemon.plugins.color night-light-temperature {temp}"
 os.system(cmd)
